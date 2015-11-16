@@ -1,6 +1,7 @@
 package simpledb.buffer;
 
 import simpledb.file.*;
+import 	java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Manages the pinning and unpinning of buffers to blocks.
@@ -10,6 +11,7 @@ import simpledb.file.*;
 class BasicBufferMgr {
    private Buffer[] bufferpool;
    private int numAvailable;
+   private ConcurrentHashMap<Block, Buffer> bufferPoolMap;
    
    /**
     * Creates a buffer manager having the specified number 
@@ -27,6 +29,7 @@ class BasicBufferMgr {
    BasicBufferMgr(int numbuffs) {
       bufferpool = new Buffer[numbuffs];
       numAvailable = numbuffs;
+      bufferPoolMap = new ConcurrentHashMap<Block, Buffer>();
       for (int i=0; i<numbuffs; i++)
          bufferpool[i] = new Buffer();
    }
@@ -58,8 +61,13 @@ class BasicBufferMgr {
             return null;
          buff.assignToBlock(blk);
       }
-      if (!buff.isPinned())
-         numAvailable--;
+      if (!buff.isPinned()){
+    	  numAvailable--;
+    	  bufferPoolMap.put(blk, buff); //what about first line of code..
+    	  								//if there already is a mapping, what happens??
+    	  //System.out.println("from BasicBufferMgr.pin(). added to bufferPoolMap()");
+      }
+         
       buff.pin();
       return buff;
    }
@@ -89,8 +97,11 @@ class BasicBufferMgr {
     */
    synchronized void unpin(Buffer buff) {
       buff.unpin();
-      if (!buff.isPinned())
+      if (!buff.isPinned()){
          numAvailable++;
+         bufferPoolMap.remove(buff.block());
+         //System.out.println("from BasicBufferMgr.unpin(). removing from bufferPoolMap()");
+      }
    }
    
    /**
@@ -102,12 +113,13 @@ class BasicBufferMgr {
    }
    
    private Buffer findExistingBuffer(Block blk) {
-      for (Buffer buff : bufferpool) {
+      /*for (Buffer buff : bufferpool) {
          Block b = buff.block();
          if (b != null && b.equals(blk))
             return buff;
-      }
-      return null;
+      }*/
+	  return (bufferPoolMap.get(blk)); 
+      //return null;
    }
    
    private Buffer chooseUnpinnedBuffer() {
@@ -115,5 +127,11 @@ class BasicBufferMgr {
          if (!buff.isPinned())
          return buff;
       return null;
+   }
+   boolean containsMapping(Block blk){
+	   return bufferPoolMap.containsKey(blk);
+   }
+   Buffer getMapping(Block blk){
+	   return bufferPoolMap.get(blk);
    }
 }
