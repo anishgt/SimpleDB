@@ -20,7 +20,11 @@ public class Buffer {
    private int modifiedBy = -1;  // negative means not modified
    private int logSequenceNumber = -1; // negative means no corresponding log record
 
-   /**
+   public int getLogSequenceNumber() {
+	return logSequenceNumber;
+}
+
+/**
     * Creates a new buffer, wrapping a new 
     * {@link simpledb.file.Page page}.  
     * This constructor is called exclusively by the 

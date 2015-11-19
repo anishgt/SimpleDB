@@ -2,7 +2,9 @@ package simpledb.buffer;
 
 import simpledb.file.*;
 import 	java.util.concurrent.ConcurrentHashMap;
-
+//import java.util.Comparator;
+//import java.util.PriorityQueue;
+//java -classpath .\bin\ simpledb.server.Startup simpleDB
 /**
  * Manages the pinning and unpinning of buffers to blocks.
  * @author Edward Sciore
@@ -12,6 +14,7 @@ class BasicBufferMgr {
    private Buffer[] bufferpool;
    private int numAvailable;
    private ConcurrentHashMap<Block, Buffer> bufferPoolMap;
+   //public PriorityQueue<Buffer> minLSN;
    
    /**
     * Creates a buffer manager having the specified number 
@@ -30,6 +33,8 @@ class BasicBufferMgr {
       bufferpool = new Buffer[numbuffs];
       numAvailable = numbuffs;
       bufferPoolMap = new ConcurrentHashMap<Block, Buffer>();
+      //Comparator<Buffer> comparator = new bufferCompLSN();
+      //minLSN = new PriorityQueue<Buffer>(numbuffs, comparator);
       for (int i=0; i<numbuffs; i++)
          bufferpool[i] = new Buffer();
    }
@@ -41,7 +46,7 @@ class BasicBufferMgr {
    synchronized void flushAll(int txnum) {
       for (Buffer buff : bufferpool)
          if (buff.isModifiedBy(txnum))
-         buff.flush();
+        	 buff.flush();
    }
    
    /**
@@ -63,11 +68,12 @@ class BasicBufferMgr {
       }
       if (!buff.isPinned()){
     	  numAvailable--;
-    	  bufferPoolMap.put(blk, buff); //what about first line of code..
+    	   //what about first line of code..
     	  								//if there already is a mapping, what happens??
     	  //System.out.println("from BasicBufferMgr.pin(). added to bufferPoolMap()");
+    	  
       }
-         
+      bufferPoolMap.put(blk, buff);
       buff.pin();
       return buff;
    }
@@ -123,9 +129,23 @@ class BasicBufferMgr {
    }
    
    private Buffer chooseUnpinnedBuffer() {
-      for (Buffer buff : bufferpool)
-         if (!buff.isPinned())
-         return buff;
+	  if (numAvailable > 0){
+		  for (Buffer buff : bufferpool)
+			  if (!buff.isPinned())
+		         return buff;  
+	  } else {
+		  //return minLSN.remove();
+		  int minlsn = Integer.MAX_VALUE;
+		  Buffer tempmin = null;
+		  for (Buffer buff : bufferpool){
+			  if ((buff.getLogSequenceNumber() < minlsn) && (buff.getLogSequenceNumber()>=0)){
+				  minlsn= buff.getLogSequenceNumber();
+				  tempmin = buff;
+			  }
+		  }
+		  if (tempmin != null)
+			  return tempmin;			  
+	  }
       return null;
    }
    boolean containsMapping(Block blk){
