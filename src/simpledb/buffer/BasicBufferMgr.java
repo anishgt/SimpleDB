@@ -128,23 +128,49 @@ class BasicBufferMgr {
       //return null;
    }
    
+//   private Buffer chooseUnpinnedBuffer() {
+//	  if (numAvailable > 0){
+//		  for (Buffer buff : bufferpool)
+//			  if (!buff.isPinned())
+//		         return buff;  
+//	  } else {
+//		  //return minLSN.remove();
+//		  int minlsn = Integer.MAX_VALUE;
+//		  Buffer tempmin = null;
+//		  for (Buffer buff : bufferpool){
+//			  if ((buff.getLogSequenceNumber() < minlsn) && (buff.getLogSequenceNumber()>=0)){
+//				  minlsn= buff.getLogSequenceNumber();
+//				  tempmin = buff;
+//			  }
+//		  }
+//		  if (tempmin != null)
+//			  return tempmin;			  
+//	  }
+//      return null;
+//   }
    private Buffer chooseUnpinnedBuffer() {
 	  if (numAvailable > 0){
-		  for (Buffer buff : bufferpool)
-			  if (!buff.isPinned())
-		         return buff;  
-	  } else {
-		  //return minLSN.remove();
 		  int minlsn = Integer.MAX_VALUE;
 		  Buffer tempmin = null;
+		  Buffer firstNegativeBuff = null;
+		  
+		  
 		  for (Buffer buff : bufferpool){
-			  if ((buff.getLogSequenceNumber() < minlsn) && (buff.getLogSequenceNumber()>=0)){
+			  if ((!buff.isPinned()) && (buff.getLogSequenceNumber() < minlsn) 
+					  && (buff.getLogSequenceNumber()>=0)){
 				  minlsn= buff.getLogSequenceNumber();
 				  tempmin = buff;
 			  }
+			  if (!buff.isPinned() && (buff.getLogSequenceNumber() == -1) 
+					  && (firstNegativeBuff == null))
+					  firstNegativeBuff = buff;
 		  }
+		  
+		  
 		  if (tempmin != null)
-			  return tempmin;			  
+			  return tempmin;	//Unpinned buffer with Least positive LSN
+		  if (firstNegativeBuff != null)
+			  return firstNegativeBuff; //First Unpinned Buffer with negative LSN 
 	  }
       return null;
    }
