@@ -22,7 +22,11 @@ public class BufferMgr {
    private static final long MAX_TIME = 10000; // 10 seconds
    private BasicBufferMgr bufferMgr;
    
-   /**
+   /*public BasicBufferMgr getBasicBufferMgr() {
+	return bufferMgr;
+}*/
+
+/**
     * Creates a new buffer manager having the specified 
     * number of buffers.
     * This constructor depends on both the {@link FileMgr} and
@@ -126,5 +130,8 @@ public class BufferMgr {
    }
    public Buffer getMapping(Block blk){
 	   return bufferMgr.getMapping(blk);
+   }
+   public void getStatistics(){
+	   bufferMgr.getStatistics();
    }
 }

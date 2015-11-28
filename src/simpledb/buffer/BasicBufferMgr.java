@@ -180,4 +180,21 @@ class BasicBufferMgr {
    Buffer getMapping(Block blk){
 	   return bufferPoolMap.get(blk);
    }
+   public void getStatistics(){
+	   System.out.println("\n\nPrinting Statistics\n");
+	   int index=0;
+	   for (Buffer buff : bufferpool){
+		   ++index;
+		   System.out.println("Statistics for Buffer "+index);
+		   System.out.println("reads    :"+buff.getReadCount());
+		   System.out.println("writes   :"+buff.getWriteCount());
+		   System.out.println("flushes  :"+buff.getFlushCount());
+		   System.out.println("number of times pinned          :"+buff.getPinCount());
+		   System.out.println("number of times unpinned        :"+buff.getUnpinCount());
+		   System.out.println("number of times blocks assigned :"+buff.getBlockCount());
+		   System.out.println("newCount :"+buff.getNewCount()+"\n");		   
+	   }
+	   
+	   
+   }
 }

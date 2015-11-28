@@ -19,6 +19,71 @@ public class Buffer {
    private int pins = 0;
    private int modifiedBy = -1;  // negative means not modified
    private int logSequenceNumber = -1; // negative means no corresponding log record
+   private int readCount=0;
+   private int writeCount=0;
+   private int flushCount=0;
+   private int pinCount=0;
+   private int unpinCount=0;
+   private int blockCount=0;
+   private int newCount=0;
+   
+   public int getBlockCount() {
+	return blockCount;
+}
+
+public void incBlockCount() {
+	this.blockCount++;
+}
+
+public int getNewCount() {
+	return newCount;
+}
+
+public void incNewCount() {
+	this.newCount++;
+}
+
+public int getPinCount() {
+	return pinCount;
+}
+
+public void incPinCount() {
+	this.pinCount++;
+}
+
+public int getUnpinCount() {
+	return unpinCount;
+}
+
+public void incUnpinCount() {
+	this.unpinCount++;
+}
+
+public int getReadCount() {
+	return readCount;
+}
+
+public void incReadCount() {
+	this.readCount++;
+}
+
+public int getWriteCount() {
+	return writeCount;
+}
+
+public void incWriteCount() {
+	this.writeCount++;
+}
+
+public int getFlushCount() {
+	return flushCount;
+}
+
+public void incFlushCount() {
+	this.flushCount++;
+}
+
+
 
    public int getLogSequenceNumber() {
 	return logSequenceNumber;
@@ -49,6 +114,7 @@ public class Buffer {
     * @return the integer value at that offset
     */
    public int getInt(int offset) {
+	  incReadCount(); 
       return contents.getInt(offset);
    }
 
@@ -61,6 +127,7 @@ public class Buffer {
     * @return the string value at that offset
     */
    public String getString(int offset) {
+	  incReadCount();
       return contents.getString(offset);
    }
 
@@ -83,6 +150,7 @@ public class Buffer {
       if (lsn >= 0)
 	      logSequenceNumber = lsn;
       contents.setInt(offset, val);
+      incWriteCount();
    }
 
    /**
@@ -104,6 +172,7 @@ public class Buffer {
       if (lsn >= 0)
 	      logSequenceNumber = lsn;
       contents.setString(offset, val);
+      incWriteCount();
    }
 
    /**
@@ -127,6 +196,7 @@ public class Buffer {
          SimpleDB.logMgr().flush(logSequenceNumber);
          contents.write(blk);
          modifiedBy = -1;
+         incFlushCount();
       }
    }
 
@@ -135,6 +205,7 @@ public class Buffer {
     */
    void pin() {
       pins++;
+      incPinCount();
    }
 
    /**
@@ -142,6 +213,7 @@ public class Buffer {
     */
    void unpin() {
       pins--;
+      incUnpinCount();
    }
 
    /**
@@ -175,6 +247,7 @@ public class Buffer {
       blk = b;
       contents.read(blk);
       pins = 0;
+      incBlockCount();
    }
 
    /**
@@ -190,5 +263,6 @@ public class Buffer {
       fmtr.format(contents);
       blk = contents.append(filename);
       pins = 0;
+      incNewCount();
    }
 }
