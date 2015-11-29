@@ -23,17 +23,19 @@ public class Startup {
       while (time <1000000000000000000L)
     	  ++time;*/
       
-      //Buffer[] buffpool = SimpleDB.bufferMgr().getBasicBufferMgr().getBufferpool();
-      //buffpool[0].pin();
-      //buffpool[1].pin();
- /*     buffpool[2].pin();
+    //  Buffer[] buffpool = SimpleDB.bufferMgr().getBasicBufferMgr().getBufferpool();
+ /*     buffpool[0].pin();
+      buffpool[1].pin();
+      buffpool[2].pin();
       buffpool[3].pin();
       buffpool[4].pin();
       buffpool[5].pin();
       buffpool[6].pin();
       buffpool[7].pin();
   */   
-  /*    buffpool[3].setLogSequenceNumber(0);
+   /*   buffpool[0].setLogSequenceNumber(0);
+      buffpool[1].setLogSequenceNumber(0);
+      buffpool[3].setLogSequenceNumber(0);
       buffpool[2].setLogSequenceNumber(0);
       buffpool[4].setLogSequenceNumber(0);
       buffpool[5].setLogSequenceNumber(0);
@@ -41,10 +43,14 @@ public class Startup {
       buffpool[7].setLogSequenceNumber(0);
   */
       Scanner sc=new Scanner(System.in);
+      try{
       while (true){
 	      System.out.println("Enter some strings when you're ready to getStatistics()");
 	      sc.next();
 	      SimpleDB.bufferMgr().getStatistics();
+      }
+      }finally{
+      sc.close();
       }
    }
 }
