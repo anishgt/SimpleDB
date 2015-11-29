@@ -26,8 +26,14 @@ public class Buffer {
    private int unpinCount=0;
    private int blockCount=0;
    private int newCount=0;
+
    
-   public int getBlockCount() {
+
+   public void setLogSequenceNumber(int logSequenceNumber) {
+	this.logSequenceNumber = logSequenceNumber;
+}
+
+public int getBlockCount() {
 	return blockCount;
 }
 
@@ -203,7 +209,7 @@ public void incFlushCount() {
    /**
     * Increases the buffer's pin count.
     */
-   void pin() {
+   public void pin() {
       pins++;
       incPinCount();
    }
@@ -211,7 +217,7 @@ public void incFlushCount() {
    /**
     * Decreases the buffer's pin count.
     */
-   void unpin() {
+   public void unpin() {
       pins--;
       incUnpinCount();
    }
@@ -235,7 +241,11 @@ public void incFlushCount() {
       return txnum == modifiedBy;
    }
 
-   /**
+   public int getModifiedBy() {
+	return modifiedBy;
+}
+
+/**
     * Reads the contents of the specified block into
     * the buffer's page.
     * If the buffer was dirty, then the contents

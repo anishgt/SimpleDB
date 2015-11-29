@@ -1,0 +1,7 @@
+TestCases:
+
+
+1) Buffers 0 and 1 were pinned. Next buffer to be chosen is Buffer[2]. (2-7 LSN -1)    										Passed
+2) Buffers 0 and 1 were pinned. Buffer[3] LSN = 0 (least positive). Other buffers have LSN -1 .	Buffer 3 should be chosen	Passed
+3) All Buffers pinned. Should throw BufferAbortExcecption 																	Passed
+4) Buffers 0 and 1 were pinned. Other buffers LSN set to 0. Check if least LSN is used. 									Passed
