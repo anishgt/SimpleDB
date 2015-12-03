@@ -110,7 +110,7 @@ public class BasicBufferMgr {
 	 * @return the pinned buffer
 	 */
 	synchronized Buffer pinNew(String filename, PageFormatter fmtr) {
-		System.out.println("Calling pinNew");
+		//System.out.println("Calling pinNew");
 		Buffer buff = chooseUnpinnedBuffer();
 		if (buff == null)
 			return null;
