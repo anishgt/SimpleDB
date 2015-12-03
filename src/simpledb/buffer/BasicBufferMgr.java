@@ -75,6 +75,7 @@ public class BasicBufferMgr {
 	 * @return the pinned buffer
 	 */
 	synchronized Buffer pin(Block blk) {
+		//System.out.println("Calling pin");
 		Buffer buff = findExistingBuffer(blk);
 		//System.out.println("Inside BasicBufferMgr pin");
 		if (buff == null) {
@@ -109,11 +110,13 @@ public class BasicBufferMgr {
 	 * @return the pinned buffer
 	 */
 	synchronized Buffer pinNew(String filename, PageFormatter fmtr) {
+		System.out.println("Calling pinNew");
 		Buffer buff = chooseUnpinnedBuffer();
 		if (buff == null)
 			return null;
 		buff.assignToNew(filename, fmtr);
 		numAvailable--;
+		bufferPoolMap.put(buff.block(), buff);
 		buff.pin();
 		return buff;
 	}
