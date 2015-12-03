@@ -134,4 +134,7 @@ public class BufferMgr {
    public void getStatistics(){
 	   bufferMgr.getStatistics();
    }
+   public void iterateMap(){
+	   bufferMgr.iterateMap();
+   }
 }

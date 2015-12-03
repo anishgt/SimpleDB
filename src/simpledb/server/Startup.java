@@ -1,6 +1,7 @@
 package simpledb.server;
 
 import simpledb.buffer.Buffer;
+import simpledb.file.Block;
 import simpledb.remote.*;
 import java.rmi.registry.*;
 import java.util.Scanner;
@@ -19,9 +20,6 @@ public class Startup {
       
       
       System.out.println("database server ready");
-      /*long time = 0;
-      while (time <1000000000000000000L)
-    	  ++time;*/
       
       //Buffer[] buffpool = SimpleDB.bufferMgr().getBasicBufferMgr().getBufferpool();
       //buffpool[0].pin();
@@ -40,11 +38,38 @@ public class Startup {
       buffpool[6].setLogSequenceNumber(0);
       buffpool[7].setLogSequenceNumber(0);
   */
-      Scanner sc=new Scanner(System.in);
+  /*    Scanner sc=new Scanner(System.in);
       while (true){
 	      System.out.println("Enter some strings when you're ready to getStatistics()");
 	      sc.next();
 	      SimpleDB.bufferMgr().getStatistics();
+	      
+	      SimpleDB.bufferMgr().iterateMap();
       }
+   */
+ /*     
+  	Block[] blocks = new Block[10];
+  	for (int i=0; i< 10; i++){
+  		blocks[i] = new Block(String.valueOf(i), i);
+  	}
+  	System.out.println("Pinning blocks: ");
+  	for (int i=0; i<5; i++){
+  		if (blocks[i]==null)
+  			System.out.println("Block index "+i+" is null");
+  		else
+  			SimpleDB.bufferMgr().pin(blocks[i]);
+  		System.out.println("Pinned block index: "+i);
+  	}
+  	for (int i=0; i<5; i++){
+  		if (blocks[i]==null)
+  			System.out.println("Block index "+i+" is null");
+  		else
+  			SimpleDB.bufferMgr().unpin(SimpleDB.bufferMgr().getMapping(blocks[i]));
+  		System.out.println("UnPinned block index: "+i);
+  	}
+  	SimpleDB.bufferMgr().pin(blocks[0]);
+  	SimpleDB.bufferMgr().pin(blocks[1]);
+  	SimpleDB.bufferMgr().getStatistics();
+ */
    }
 }

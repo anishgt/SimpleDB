@@ -76,6 +76,7 @@ public class BasicBufferMgr {
 	 */
 	synchronized Buffer pin(Block blk) {
 		Buffer buff = findExistingBuffer(blk);
+		//System.out.println("Inside BasicBufferMgr pin");
 		if (buff == null) {
 			buff = chooseUnpinnedBuffer();
 			if (buff == null)
@@ -92,6 +93,7 @@ public class BasicBufferMgr {
 		}
 		bufferPoolMap.put(blk, buff);
 		buff.pin();
+		//iterateMap();
 		return buff;
 	}
 
@@ -221,5 +223,14 @@ public class BasicBufferMgr {
 			++index;
 		}
 
+	}
+	public void iterateMap() {
+		System.out.println("\n\nIterating over Buffer Pool Map : \n");
+		for (ConcurrentHashMap.Entry<Block, Buffer> entry : bufferPoolMap.entrySet()) {
+		    System.out.println("Block = " + entry.getKey() + ", Buffer = " + entry.getValue());
+		}
+	}
+	public Buffer getBuffer(Block blk){
+		return bufferPoolMap.get(blk);
 	}
 }
